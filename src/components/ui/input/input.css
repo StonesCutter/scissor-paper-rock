@@ -1,0 +1,31 @@
+.default {
+    /* border: 2px solid red; */
+    display: flex;
+}
+
+label {
+    display: flex;
+    margin: 10px 0;
+}
+
+.text {
+    flex-direction: column;
+}
+
+.radio {
+    flex-direction: row;
+}
+
+.checkbox {
+    /* border: 2px solid orange; */
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.checkbox input {
+    align-items: center;
+    justify-content: start;
+    top: 1px;
+    position: relative;
+}

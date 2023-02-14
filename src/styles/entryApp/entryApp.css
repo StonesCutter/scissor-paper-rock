@@ -1,0 +1,137 @@
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* justify-content: center; */
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.container {
+    /* border: 2px solid rgb(13, 255, 0); */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 30px 10%;
+    /* width: 90%; */
+}
+
+.container__card {
+    background-color: #006e8d;
+    margin: 60px 10%;
+    padding: 20px 30px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.container__title {
+    /* border: 2px solid wheat; */
+    display: block;
+    line-height: 0;
+}
+
+.container__results {
+    /* border: 2px solid red; */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+}
+
+.container__info {
+    /* border: 2px solid violet; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container__votes span {
+    /* border: 2px solid red; */
+    margin-left: 10px;
+}
+
+.container__button {
+    /* border: 2px solid orange; */
+    margin: 30px auto;
+}
+
+.container__btn {
+    display: flex;
+    flex-direction: column;
+}
+
+.container__timer {
+    /* border: 2px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container__timer p:first-child {
+    margin-right: 30px;
+    font-weight: 500;
+    color: #61dafb;
+}
+
+.container__timer-display {
+    /* border: 2px solid red; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    text-align: center;
+}
+
+.display {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.display span {
+    margin: auto 30px;
+    font-size: 36px;
+}
+
+
+
+.container__timer p {
+    margin-right: 10px;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
