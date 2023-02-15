@@ -112,8 +112,10 @@
 }
 
 .display span {
+    /* border: 2px solid red; */
     margin: auto 30px;
     font-size: 36px;
+    width: 50px;
 }
 
 

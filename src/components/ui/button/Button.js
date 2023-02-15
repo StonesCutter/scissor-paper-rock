@@ -21,7 +21,7 @@ function Button(props) {
 Button.defaultProps = {
     styleCss: "default-btn",
     label: "label",
-    callBackButton: ""
+    callBackButton: "",
 }
 
 Button.propTypes = {
