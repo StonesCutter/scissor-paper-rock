@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import Button from '../ui/button/Button';
 import NewInput from '../ui/input/NewInput';
 import { getLocalStorage, setLocalStorage } from '../../utils/getLocalStorage';
-import "../../styles/entryApp/entryApp.css"
+// import "../../styles/entryApp/entryApp.css"
+import "./entry.css"
+import { motion } from "framer-motion"
 
 
 // PUNTI PROGETTO
@@ -42,7 +44,33 @@ class Entry extends Component {
         this.userName = "";
 
         if (!localStorage.getItem("users")) {
-            localStorage.setItem("users", JSON.stringify([]))
+            localStorage.setItem("users", JSON.stringify([
+                {
+                    name: 'player1',
+                    result: 3,
+                    // rank: [],
+                    id: Math.floor(Math.random() * 10000)
+                },
+                {
+                    name: 'player2',
+                    result: 2,
+                    // rank: [],
+                    id: Math.floor(Math.random() * 10000)
+                },
+                {
+                    name: 'player3',
+                    result: 1,
+                    // rank: [],
+                    id: Math.floor(Math.random() * 10000)
+                },
+                {
+                    name: 'player4',
+                    result: 5,
+                    // rank: [],
+                    id: Math.floor(Math.random() * 10000)
+                },
+
+            ]))
         }
 
         this.matrix = [
@@ -55,6 +83,7 @@ class Entry extends Component {
 
         this.sceltaCpu = null;
         this.sceltaUser = null;
+        // this.isEnded = false
 
 
         this.state = {
@@ -63,7 +92,11 @@ class Entry extends Component {
             // sceltaUtente: null,
             winsCpu: 0, // round
             winsUser: 0, //round
+            // rank: [],
             isEnded: false,
+            isvalid: false,
+            isWinner: ""
+
         }
     }
 
@@ -71,40 +104,159 @@ class Entry extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log("prevState", prevState);
-        console.log("state", this.state);
+        // console.log("prevState", prevState);
+        let stateCopy = Object.assign({}, this.state)
+
+        // console.log("stateCopy", stateCopy);
+
+        let getUser = getLocalStorage("users")
+        // console.log("getUser", getUser);
+
+        if (this.state.isWinner !== "") {
+            uploadResult(this.state.isWinner)
+        }
+
+
+
+        /******************** */
+        // if(this.state)
+
+        //this.winnerMatch()
+
+
     }
 
     // funzione pr determinare chi ha vinto
     winnerRound = (sceltaUtente, sceltaCpu) => {
-
-        console.log(sceltaUtente, sceltaCpu);
+        // console.log(sceltaUtente, sceltaCpu);
         let check = this.matrix[sceltaUtente][sceltaCpu]
 
         let winnerRound = Object.assign({}, this.state)
 
         switch (check) {
             case 1:
-                winnerRound.winsUser++
-                console.log("wins user");
+                winnerRound.winsUser++;
+                // console.log("wins user");
                 break;
             case -1:
-                winnerRound.sceltaCpu++
-                console.log("winsCpu");
+                winnerRound.winsCpu++
+                // console.log("winsCpu");
                 break;
             default: console.log("Pareggio");
         }
 
+        this.winnerMatch2(winnerRound);
+
+
         this.setState({
             winsUser: winnerRound.winsUser,
-            winsCpu: winnerRound.winsCpu
+            winsCpu: winnerRound.winsCpu,
+            /*************** */
+            isWinner: winnerRound.isWinner
         })
+        console.log("winnerRound", winnerRound);
+
     }
 
-    determineWinner = () => {
-        Math.abs(this.state.winsUser - this.state.winsCpu)
+    // determineWinner = () => {
+    //         // let lastUser = getUser.pop()
+    //         // console.log(lastUser);
+    //         // lastUser.result++;
+    //         // addUserToRank.rank.push(lastUser);
+    //         // setLocalStorage("users", getUser)
+    //         // console.log(getUser);
+    //     }
+    // }
+
+
+    winnerMatch = () => {
+        let copyState = Object.assign({}, this.state)
+
+        if (this.state.winsUser - this.state.winsCpu >= 2) {
+            /* vince user. funzione di carica vincitore su local storage. return */
+            this.uploadResult(this.userName);
+            copyState.isEnded = true
+            console.log("copyState.isEnded", copyState);
+            console.log("vincitore della partita e' USER")
+            return;
+        }
+        if (this.state.winsUser - this.state.winsCpu <= -2) {
+            /* vince cpu. funzione di carica vincitore su local storage. return */
+            this.uploadResult(this.randomCpuPlayer());
+            console.log("vincitore della partita e' CPU")
+            return;
+        }
+        // caso in cui siamo, per esempio, a punteggio 2-2
+        if (this.state.winsUser + this.state.winsCpu >= 4) {
+            if (this.state.winsUser > this.state.winsCpu) {
+                /* vince user. funzione di carica vincitore su local storage*/
+                this.uploadResult(this.userName);
+                console.log("vincitore della partita e' USER")
+                return;
+            }
+            if (this.state.winsCpu > this.state.winsUser) {
+                /* vince cpu. funzione di carica vincitore su local storage.*/
+                this.uploadResult(this.randomCpuPlayer());
+                console.log("vincitore della partita e' CPU")
+                return;
+            }
+        }
+
+    };
+
+    /************************************* */
+
+    winnerMatch2(copyState) {
+        //let copyState = Object.assign({}, this.state)
+
+        let enemyName = this.randomCpuPlayer();
+        if (copyState.winsUser - copyState.winsCpu >= 2) {
+            /* vince user. */
+            copyState.isWinner = this.userName
+        }
+        if (copyState.winsUser - copyState.winsCpu <= -2) {
+            /* vince cpu.*/
+            copyState.matchWinner = enemyName
+
+        }
+        // caso in cui siamo, per esempio, a punteggio 2-2
+        if (copyState.winsUser + copyState.winsCpu >= 4) {
+            if (copyState.winsUser > copyState.winsCpu) {
+                /* vince user. */
+                copyState.matchWinner = this.userName
+
+            }
+            if (copyState.winsCpu > copyState.winsUser) {
+                /* vince cpu. */
+                copyState.matchWinner = enemyName
+
+            }
+        }
+
+    };
+
+    /***************************************** */
+
+    randomCpuPlayer() {
+        const cpuPlayers = ["player1", "player2", "player3", "player4"];
+        return cpuPlayers[Math.floor(Math.random() * cpuPlayers.length)];
     }
 
+    uploadResult(winner) {
+        let getUsers = getLocalStorage("users");
+        console.log("winner", winner);
+
+        getUsers.find((el) => {
+            if (el.name === winner) {
+                el.result++;
+            }
+            // this.isEnded = true;
+        })
+
+
+        setLocalStorage("users", getUsers);
+        /* settare lo stato.isEnded = true */
+    }
 
     // scelta cpu
     cpuChoice() {
@@ -117,32 +269,36 @@ class Entry extends Component {
     }
 
     addNewUser = () => {
+        //metto isInvalid su false così toglie l'avviso di mettere il nome
+        this.setState({
+            isvalid: false
+        })
+
         let newUser = {
             name: this.userName,
-            result: 0
+            result: 0,
+            // rank: [],
+            id: Math.floor(Math.random() * 10000)
+        }
+        //controllo che il campo non sia vuoto
+        if (newUser.name.trim().length === 0) {
+            this.setState({
+                isvalid: true
+            })
+            return console.log("input vuoto");
         }
 
         let getUsers = getLocalStorage("users")
+
         getUsers.push(newUser)
         setLocalStorage("users", getUsers)
-
-        // this.setState({
-        //     userName: this.userName
-        // })
-
     }
 
     scissor = () => {
-        // this.setState({
-        //     sceltaUtente: 2,
-        //     sceltaCpu: this.cpuChoice()
-        // })
-
         let sceltaUtente = 2;
         let sceltaCpu = this.cpuChoice()
 
         this.winnerRound(sceltaUtente, sceltaCpu)
-
     }
 
     rock = () => {
@@ -150,11 +306,6 @@ class Entry extends Component {
         let sceltaCpu = this.cpuChoice()
 
         this.winnerRound(sceltaUtente, sceltaCpu)
-
-        // this.setState({
-        //     sceltaUtente: 0,
-        //     sceltaCpu: this.cpuChoice()
-        // })
     }
 
     paper = () => {
@@ -162,12 +313,6 @@ class Entry extends Component {
         let sceltaCpu = this.cpuChoice()
 
         this.winnerRound(sceltaUtente, sceltaCpu)
-
-
-        // this.setState({
-        //     sceltaUtente: 1,
-        //     sceltaCpu: this.cpuChoice()
-        // })
     }
 
 
@@ -176,49 +321,69 @@ class Entry extends Component {
 
     render() {
         return (
-            <div>
-                <h1>Start Game</h1>
+            <div className='container'>
+                <motion.h1 animate={ { y: 20, scale: 1 } } initial={ 0 } className='container__title'>Start Game</motion.h1>
 
                 <div>
-                    <NewInput
-                        label={ "Name" }
-                        typeInput={ "text" }
-                        callbackInput={ this.inputName }
-                    />
-                    <Button
-                        callBackButton={ this.addNewUser }
-                        label={ "Add User" }
-                        styleCss={ "btn" }
-                    />
 
-                    <div className='container__card'>
+                    <div className='container__scores'>
+                        <p>CPU:
+                            <span>
+                                { this.state.winsCpu }
+                            </span>
+                        </p>
+                        <p>USER:
+                            <span>
+                                { this.state.winsUser }
+                            </span>
+                        </p>
+                    </div>
+
+                    <div className='container__input'>
+                        { this.state.isvalid && <h3>Insert your name</h3> }
+                        <NewInput
+                            // label={ "Name" }
+                            typeInput={ "text" }
+                            callbackInput={ this.inputName }
+                            styleNewInput={ "newinput" }
+                            styleLabel={ "label" }
+                            placeholderInput={ "Write your name" }
+                        />
+                        <Button
+                            callBackButton={ this.addNewUser }
+                            label={ "Add User" }
+                            styleCss={ "btn add-user" }
+                        // animate={ { rotate: 360 } }
+                        />
+                    </div>
+
+
+                    { this.state.winsUser === 2 && <h2>You WIN!!!</h2> }
+                    { this.state.winsCpu === 2 && <h2>You are a looser...</h2> }
+
+                    <div className='container__buttons'>
                         <Button
                             callBackButton={ this.paper }
-                            label={ "Carta" }
-                            styleCss={ "btn" }
+                            label={ "Paper" }
+                            styleCss={ "btn " }
                         />
                         <Button
                             callBackButton={ this.scissor }
-                            label={ "Forbici" }
+                            label={ "Scissors" }
                             styleCss={ "btn" }
                         />
                         <Button
                             callBackButton={ this.rock }
-                            label={ "Sasso" }
+                            label={ "Rock" }
                             styleCss={ "btn" }
                         />
-                        <Button
-                            callBackButton={ this.cpuChoice }
-                            label={ "Cpu" }
-                            styleCss={ "btn" }
-                        />
-
                     </div>
                 </div>
             </div>
         )
     }
 }
+
 
 
 export default Entry

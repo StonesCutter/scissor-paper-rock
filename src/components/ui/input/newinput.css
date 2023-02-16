@@ -9,12 +9,12 @@
 .newinput {
     /* border: 2px solid blue; */
     font-size: 20px;
-    border-radius: 10px;
+    border-radius: 6px;
     outline: transparent;
     margin: 10px auto;
     display: flex;
     flex-direction: column;
-    width: 90%;
+    max-width: 90%;
 }
 
 .newinput ::placeholder {
@@ -29,17 +29,19 @@
 
 .label {
     margin: 10px 0;
+    font-size: 18px;
 }
 
 input {
     padding: 8px 15px;
     font-size: 20px;
     border-radius: 8px;
+    border: none;
     outline: transparent;
 }
 
 input:focus {
-    border: 3px solid rgb(0, 255, 225);
+    border: 1px solid rgb(0, 255, 225);
 }
 
 .newinput-radio {
